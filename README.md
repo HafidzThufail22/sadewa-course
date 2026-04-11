@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# sadewa-course 
 
-## Getting Started
+A dynamic landing page and custom Content Management System (Mini-CMS) designed for a driving school. This project effectively separates the public-facing promotional site from a secure admin dashboard within a single, efficient architecture.
 
-First, run the development server:
+## 🛠️ Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Framework:** [Next.js](https://nextjs.org/) (App Router)
+- **Language:** TypeScript
+- **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+- **Backend & Database:** [Supabase](https://supabase.com/) (PostgreSQL, Auth, Storage)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Key Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🌐 Public Facing (User App)
+- **Single Page Application (SPA):** Seamless navigation with smooth scrolling sections.
+- **Dynamic Course Packages:** Real-time fetching of driving course packages directly from the database.
+- **Responsive Design:** Fully optimized UI/UX for both mobile and desktop devices.
+- **Integrated Contact Form:** Inquiries are securely sent and stored in the admin system.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🔒 Admin Dashboard (Mini-CMS)
+- **Secure Authentication:** Protected routes powered by Supabase Auth.
+- **Package Management (CRUD):** Easily add, edit, or remove driving course packages, including details like duration, vehicle type, and "popular" status.
+- **Dynamic Content Control:** Update hero text, about section content, and promotional images without touching the codebase.
+- **Inbox Management:** View and manage incoming messages from prospective students.
 
-## Learn More
+## 📂 Modular Architecture
 
-To learn more about Next.js, take a look at the following resources:
+This project utilizes a modular design pattern with Next.js Route Groups to maintain a clean and scalable codebase:
+- `src/app/(public)/` - Contains the main SPA Landing Page.
+- `src/app/admin/` - Contains the secure Admin Dashboard and management routes.
+- `src/components/ui/` - Reusable "dumb" UI components (Buttons, Tables, Inputs).
+- `src/components/sections/` - Smart components for page layout construction.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+To run this project locally, follow these steps:
 
-## Deploy on Vercel
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/HafidzThufail/sadewa-course.git
+   cd sadewa-course
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Configure Environment Variables:**
+   Create a `.env.local` file in the root directory and add your Supabase credentials:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open the application:**
+   Navigate to [http://localhost:3000](http://localhost:3000) in your browser to see the result.
+
+## 🤝 Contributing
+
+Contributions are welcome! If you have suggestions for improvements or encounter any issues, please feel free to open an issue or submit a pull request.
+
+## 📄 License
+
+Internal use only for Sadewa Driving School.
