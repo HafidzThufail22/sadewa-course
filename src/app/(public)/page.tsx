@@ -1,9 +1,12 @@
+import PackagesSection from "../../components/sections/PackagesSection";
+
 export default function Home() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50">
-      <h1 className="text-4xl font-bold text-blue-600">
-        Website LPK Sadewa Siap Dibangun! 🚗
-      </h1>
+    <main className="min-h-screen bg-gray-50">
+      {/* Nanti Hero Section dan About Section taruh di atas sini */}
+
+      {/* Memanggil Section Paket yang terhubung ke database */}
+      <PackagesSection />
     </main>
   );
 }
