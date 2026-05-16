@@ -1,6 +1,5 @@
 import { Inter, Poppins } from "next/font/google";
 import "../globals.css";
-// 1. Import Navbar yang baru kita buat
 import Navbar from "../../components/layout/public/Navbar";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -24,10 +23,8 @@ export default function PublicLayout({
   return (
     <html lang="id" className={`${inter.variable} ${poppins.variable}`}>
       <body className="bg-white font-sans text-gray-800 antialiased">
-        {/* 2. Pasang Navbar di sini agar selalu muncul di semua halaman publik */}
         <Navbar />
 
-        {/* 3. Konten halaman akan berada di bawahnya */}
         {children}
       </body>
     </html>

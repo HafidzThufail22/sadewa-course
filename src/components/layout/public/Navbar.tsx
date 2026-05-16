@@ -43,7 +43,7 @@ export default function Navbar() {
       <nav
         className={`mx-auto flex items-center justify-between transition-all duration-300 ease-in-out ${
           isScrolled
-            ? "max-w-5xl bg-white/80 backdrop-blur-md shadow-lg rounded-full px-8 py-3 border border-gray-100" // Mode Kapsul (Scrolled)
+            ? "max-w-5xl bg-white backdrop-blur-md shadow-lg rounded-full px-8 py-3 border border-gray-100" // Mode Kapsul (Scrolled)
             : "max-w-7xl bg-transparent px-6 py-6" // Mode Default (Transparan, Lebar)
         }`}
       >
@@ -52,7 +52,11 @@ export default function Navbar() {
           <div className="bg-primary text-white p-2 rounded-lg group-hover:bg-primary-hover transition-colors">
             <FaCar className="text-xl" />
           </div>
-          <span className="font-heading font-bold text-xl text-gray-900 tracking-tight">
+          <span
+            className={`font-heading font-bold text-xl tracking-tight transition-colors ${
+              isScrolled ? "text-gray-900" : "text-white"
+            }`}
+          >
             LPK Sadewa
           </span>
         </Link>
@@ -63,7 +67,11 @@ export default function Navbar() {
             <Link
               key={link.name}
               href={link.href}
-              className="text-sm font-medium text-gray-600 hover:text-primary transition-colors"
+              className={`text-sm font-medium transition-colors ${
+                isScrolled
+                  ? "text-gray-600 hover:text-primary"
+                  : "text-white/90 hover:text-white"
+              }`}
             >
               {link.name}
             </Link>
@@ -82,7 +90,9 @@ export default function Navbar() {
 
         {/* TOMBOL MENU (Mobile) */}
         <button
-          className="md:hidden text-gray-800 text-2xl"
+          className={`md:hidden text-2xl transition-colors ${
+            isScrolled ? "text-gray-800" : "text-white"
+          }`}
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           {isMobileMenuOpen ? <HiX /> : <HiMenu />}
@@ -92,12 +102,12 @@ export default function Navbar() {
       {/* DROPDOWN MENU MOBILE */}
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full px-4 mt-2">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-4 flex flex-col gap-4">
+          <div className="rounded-2xl border border-gray-100 bg-white/80 p-4 shadow-xl shadow-black/5 backdrop-blur-md flex flex-col gap-4">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-gray-600 font-medium hover:text-primary px-4 py-2 hover:bg-surface rounded-lg transition-colors"
+                className="text-gray-600 font-medium hover:text-primary px-4 py-2 hover:bg-white/60 rounded-lg transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.name}
