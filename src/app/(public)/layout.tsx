@@ -1,6 +1,7 @@
 import { Inter, Poppins } from "next/font/google";
 import "../globals.css";
 import Navbar from "../../components/layout/public/Navbar";
+import Footer from "../../components/layout/public/Footer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const poppins = Poppins({
@@ -26,6 +27,8 @@ export default function PublicLayout({
         <Navbar />
 
         {children}
+
+        <Footer />
       </body>
     </html>
   );
