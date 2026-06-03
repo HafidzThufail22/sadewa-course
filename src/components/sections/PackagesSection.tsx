@@ -1,6 +1,7 @@
 import { supabase } from "../../lib/supabase";
 import { Package } from "../../types";
 
+
 // Perhatikan ada kata "async" di sini
 export default async function PackagesSection() {
   // 1. Menarik data dari Supabase (Tabel 'packages')

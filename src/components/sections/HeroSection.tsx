@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
+import Button from "../ui/Button";
+import ScrambleText from "../ui/ScrambleText";
 import {
   FaArrowRight,
   FaCalendarAlt,
@@ -39,31 +42,29 @@ export default function HeroSection() {
             Metode pembelajaran yang mudah dipahami untuk pemula hingga mahir.
           </p>
 
-          {/* Tombol Aksi (CTA) */}
-          <div className="flex flex-col sm:flex-row gap-4 mb-16 justify-center">
-            <Link
-              href="#paket"
-              className="bg-primary hover:bg-primary-hover text-white px-8 py-4 rounded-full font-bold flex items-center justify-center gap-2 transition-all transform hover:scale-105 shadow-xl shadow-primary/20"
-            >
+        {/* Tombol Aksi (CTA) */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-16 justify-center">
+            <Button href="#paket" variant="primary" size="lg">
               Daftar Sekarang <FaArrowRight className="text-sm" />
-            </Link>
-            <Link
-              href="#tentang"
-              className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 px-8 py-4 rounded-full font-bold flex items-center justify-center transition-all"
-            >
+            </Button>
+            <Button href="#tentang" variant="glass" size="lg">
               Lihat Paket
-            </Link>
-          </div>
+            </Button>
+        </div>
 
-          {/* Fitur Utama (3 Ikon di bawah) */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 border-t border-white/20 pt-8 justify-items-center">
-            <div className="flex items-center gap-4">
-              <div className="bg-white/30 p-3 rounded-lg text-white">
-                <FaCalendarAlt className="text-2xl" />
-              </div>
+        {/* Fitur Utama (3 Ikon di bawah) */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 border-t border-white/20 pt-8 justify-items-center">
+          <div className="flex items-center gap-4">
+            <div className="bg-white/30 p-3 rounded-lg text-white">
+              <FaCalendarAlt className="text-2xl" />
+            </div>
               <div>
-                <p className="text-white font-bold text-lg">Jadwal Fleksibel</p>
-                <p className="text-gray-200 text-sm">Atur waktu luang anda</p>
+                <p className="text-white font-bold text-lg">
+                  <ScrambleText text="Jadwal Fleksibel" delay={400} duration={700} />
+                </p>
+                <p className="text-gray-200 text-sm">
+                  <ScrambleText text="Atur waktu luang anda" delay={500} duration={600} />
+                </p>
               </div>
             </div>
 
@@ -72,8 +73,12 @@ export default function HeroSection() {
                 <FaAward className="text-2xl" />
               </div>
               <div>
-                <p className="text-white font-bold text-lg">10+ Tahun</p>
-                <p className="text-gray-200 text-sm">Pengalaman</p>
+                <p className="text-white font-bold text-lg">
+                  <ScrambleText text="10+ Tahun" delay={600} duration={700} />
+                </p>
+                <p className="text-gray-200 text-sm">
+                  <ScrambleText text="Pengalaman" delay={700} duration={600} />
+                </p>
               </div>
             </div>
 
@@ -82,8 +87,12 @@ export default function HeroSection() {
                 <FaShieldAlt className="text-2xl" />
               </div>
               <div>
-                <p className="text-white font-bold text-lg">100% Aman</p>
-                <p className="text-gray-200 text-sm">Standar keselamatan</p>
+                <p className="text-white font-bold text-lg">
+                  <ScrambleText text="100% Aman" delay={800} duration={700} />
+                </p>
+                <p className="text-gray-200 text-sm">
+                  <ScrambleText text="Standar keselamatan" delay={900} duration={600} />
+                </p>
               </div>
             </div>
           </div>
