@@ -1,5 +1,7 @@
 import HeroSection from "../../components/sections/HeroSection";
 import PackagesSection from "../../components/sections/PackagesSection";
+import AboutSection from "../../components/sections/AboutSection";
+import LocationSection from "../../components/sections/LocationSection";
 
 export default function Home() {
   return (
@@ -7,11 +9,16 @@ export default function Home() {
       <HeroSection />
 
       {/* Section Paket Kursus */}
-      <div id="paket" className="py-10 bg-gray-50">
+      <div className="bg-gray-50">
         <PackagesSection />
       </div>
 
-      {/* Sesi lainnya (About, Contact) nanti menyusul di bawah sini */}
+      {/* Section About */}
+      <AboutSection />
+
+      {/* Section Lokasi */}
+      <LocationSection />
+
     </main>
   );
 }
