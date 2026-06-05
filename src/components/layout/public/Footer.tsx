@@ -22,7 +22,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-primary/10 py-8 px-4">
+    <footer className="bg-black py-8 px-4">
       <div className="max-w-7xl mx-auto flex flex-col items-center gap-5">
 
         {/* Social Icons */}
@@ -42,7 +42,7 @@ export default function Footer() {
         </div>
 
         {/* Garis Horizontal */}
-        <div className="w-full border-t border-blue-500/20" />
+        <div className="w-full border-t border-white/20" />
 
         {/* Copyright */}
         <p className="text-gray-500 text-sm text-center">
