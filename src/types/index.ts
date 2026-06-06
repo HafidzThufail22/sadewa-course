@@ -15,5 +15,5 @@ export interface UserRole {
   id: number;
   created_at: string;
   user_id: string; // UUID dari auth Supabase
-  role: "super_admin" | "admin";
+  role: "super admin" | "super_admin" | "admin";
 }
