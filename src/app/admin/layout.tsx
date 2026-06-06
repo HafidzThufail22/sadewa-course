@@ -1,15 +1,7 @@
-import { Inter, Poppins } from "next/font/google";
-import "../../app/globals.css";
-
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const poppins = Poppins({
-  weight: ["400", "600", "700", "800"],
-  subsets: ["latin"],
-  variable: "--font-poppins",
-});
+import Sidebar from "../../components/layout/admin/Sidebar";
 
 export const metadata = {
-  title: "Admin — LPK Sadewa",
+  title: "Admin - LPK Sadewa",
   description: "Halaman admin LPK Sadewa.",
 };
 
@@ -19,10 +11,9 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" className={`${inter.variable} ${poppins.variable}`}>
-      <body className="bg-white font-sans text-gray-800 antialiased">
-        {children}
-      </body>
-    </html>
+    <div className="min-h-screen bg-gray-50">
+      <Sidebar />
+      <main className="ml-64 min-h-screen p-8">{children}</main>
+    </div>
   );
 }

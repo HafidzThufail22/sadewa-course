@@ -10,7 +10,7 @@ export interface Package {
   is_popular: boolean;
 }
 
-// Cetakan untuk tabel user_roles
+// Cetakan untuk tabel user_role
 export interface UserRole {
   id: number;
   created_at: string;

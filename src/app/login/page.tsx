@@ -2,14 +2,103 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "../../lib/supabase"; // Pastikan path ini sesuai dengan file supabase.ts kamu
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
+type AdminRole = "admin" | "super_admin";
+
+function normalizeRole(role: unknown): AdminRole | null {
+  if (typeof role !== "string") return null;
+
+  const compactRole = role
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[^a-z]/g, "");
+
+  if (compactRole === "admin") return "admin";
+
+  if (compactRole === "superadmin") return "super_admin";
+
+  return null;
+}
+
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+
+  // State baru untuk menampung input dan status
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Logika Autentikasi
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      // 1. Proses Autentikasi ke Supabase
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+      if (authError) throw new Error("Email atau kata sandi salah.");
+      if (!authData.user) throw new Error("Terjadi kesalahan sistem.");
+
+      // 2. Cek Role dari tabel user_role
+      const { data: roleRows, error: roleError } = await supabase
+        .from("user_role")
+        .select("user_id, role")
+        .eq("user_id", authData.user.id)
+        .limit(1);
+
+      const roleData = roleRows?.[0];
+      const metadataRole = normalizeRole(authData.user.app_metadata?.role);
+      const role = normalizeRole(roleData?.role) ?? metadataRole;
+
+      console.info("Login role check", {
+        authUserId: authData.user.id,
+        roleRows,
+        roleError,
+        metadataRole: authData.user.app_metadata?.role,
+        normalizedRole: role,
+      });
+
+      if (roleError && !metadataRole) {
+        // Jika akun tidak punya role, paksa keluar (logout)
+        await supabase.auth.signOut();
+        throw new Error(
+          "Gagal membaca role admin. Pastikan tabel user_role tersedia, memiliki kolom user_id dan role, serta policy Supabase mengizinkan user login membaca role miliknya.",
+        );
+      }
+
+      if (!role) {
+        await supabase.auth.signOut();
+        throw new Error(
+          `Akun Anda belum memiliki role admin. User ID: ${authData.user.id}. Role terbaca: ${roleData?.role ?? "kosong"}.`,
+        );
+      }
+
+      // 3. Simpan Role di Local Storage
+      localStorage.setItem("userRole", role);
+      window.dispatchEvent(new Event("userRoleChange"));
+
+      // 4. Arahkan ke dasbor admin
+      router.push("/admin/packages");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Login gagal.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen w-full flex">
-
       {/* LEFT — Gambar penuh */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <Image
@@ -25,7 +114,7 @@ export default function LoginPage() {
 
       {/* RIGHT — Form Login */}
       <div className="relative w-full lg:w-1/2 flex items-center justify-center px-8 py-12">
-        {/* Background: gambar blur di belakang form (versi mobile & kanan desktop) */}
+        {/* Background: gambar blur di belakang form */}
         <div className="absolute inset-0 -z-10">
           <Image
             src="/images/hero-images.png"
@@ -49,8 +138,15 @@ export default function LoginPage() {
             </p>
           </div>
 
+          {/* Menampilkan Pesan Error jika gagal login */}
+          {error && (
+            <div className="mb-6 bg-red-500/20 border border-red-500/50 text-white p-3 rounded-lg text-sm text-center">
+              {error}
+            </div>
+          )}
+
           {/* Form */}
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleLogin}>
             {/* Email */}
             <div>
               <label
@@ -64,6 +160,9 @@ export default function LoginPage() {
                 type="email"
                 placeholder="Masukkan email Anda"
                 autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
                 className="w-full bg-transparent border-b border-white/40 text-white placeholder-white/40 py-2 text-sm focus:outline-none focus:border-white transition-colors"
               />
             </div>
@@ -82,13 +181,18 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   autoComplete="current-password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                   className="w-full bg-transparent border-b border-white/40 text-white placeholder-white/40 py-2 text-sm focus:outline-none focus:border-white transition-colors pr-8"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
                   className="absolute right-0 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
-                  aria-label={showPassword ? "Sembunyikan sandi" : "Tampilkan sandi"}
+                  aria-label={
+                    showPassword ? "Sembunyikan sandi" : "Tampilkan sandi"
+                  }
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </button>
@@ -117,14 +221,18 @@ export default function LoginPage() {
             <button
               id="btn-login"
               type="submit"
-              className="w-full bg-white text-gray-900 font-bold py-3 rounded-lg mt-2 hover:bg-gray-100 transition-all duration-200 hover:scale-[1.01] shadow-md"
+              disabled={isLoading}
+              className={`w-full text-gray-900 font-bold py-3 rounded-lg mt-2 transition-all duration-200 shadow-md ${
+                isLoading
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-white hover:bg-gray-100 hover:scale-[1.01]"
+              }`}
             >
-              Masuk
+              {isLoading ? "Memproses..." : "Masuk"}
             </button>
           </form>
         </div>
       </div>
-
     </div>
   );
 }
