@@ -3,9 +3,15 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSyncExternalStore } from "react";
-import { FaBox, FaUsers, FaSignOutAlt, FaCar } from "react-icons/fa";
+import {
+  FaBox,
+  FaTachometerAlt,
+  FaUsers,
+  FaSignOutAlt,
+  FaCar,
+} from "react-icons/fa";
 import Button from "../../ui/Button";
-import { supabase } from "../../../lib/supabase"; // Untuk fungsi logout
+import { supabase } from "../../../lib/supabase";
 
 type AdminRole = "admin" | "super_admin";
 
@@ -28,7 +34,17 @@ function subscribeToRole(callback: () => void) {
   };
 }
 
-export default function Sidebar() {
+interface SidebarProps {
+  isCollapsed: boolean;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function Sidebar({
+  isCollapsed,
+  isOpen,
+  onClose,
+}: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -45,6 +61,12 @@ export default function Sidebar() {
 
   // Daftar menu dengan aturan hak akses (allowedRoles)
   const menuItems = [
+    {
+      name: "Dashboard",
+      href: "/admin/dashboard",
+      icon: FaTachometerAlt,
+      allowedRoles: ["super_admin", "admin"], // Keduanya boleh melihat
+    },
     {
       name: "Paket",
       href: "/admin/packages",
@@ -65,17 +87,36 @@ export default function Sidebar() {
   );
 
   return (
-    <aside className="w-64 h-screen bg-gray-950 text-white flex flex-col fixed left-0 top-0 z-50">
+    <aside
+      className={`fixed left-0 top-16 z-50 flex h-[calc(100vh-4rem)] flex-col bg-gray-950 text-white shadow-2xl transition-[transform,width] duration-300 md:top-0 md:h-screen ${
+        isCollapsed ? "md:w-20" : "md:w-64"
+      } ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"} w-64`}
+    >
       {/* Logo Area */}
-      <div className="h-20 flex items-center justify-center border-b border-gray-800">
-        <FaCar className="text-primary text-3xl mr-3" />
-        <span className="font-heading font-bold text-2xl tracking-wide">
-          LPK Admin
-        </span>
+      <div
+        className={`flex h-16 items-center border-b border-gray-800 px-4 ${
+          isCollapsed ? "md:justify-center" : "justify-start"
+        }`}
+      >
+        <div
+          className={`flex items-center ${
+            isCollapsed ? "md:justify-center" : "gap-3"
+          }`}
+        >
+          <FaCar className="text-primary text-3xl shrink-0" />
+          <div className={isCollapsed ? "md:hidden" : ""}>
+            <span className="block font-heading text-xl font-bold leading-5 tracking-wide">
+              Admin
+            </span>
+            <p className="mt-0.5 text-xs font-semibold text-gray-400">
+              LPK Sadewa
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Menu Navigasi Dinamis */}
-      <nav className="flex-1 px-4 py-8 space-y-3">
+      <nav className="flex-1 space-y-3 px-4 py-8">
         {visibleMenus.map((item) => {
           const isActive = pathname.startsWith(item.href);
           const Icon = item.icon;
@@ -84,28 +125,40 @@ export default function Sidebar() {
             <Link
               key={item.name}
               href={item.href}
-              className={`flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-300 ${
+              onClick={onClose}
+              title={isCollapsed ? item.name : undefined}
+              className={`flex h-12 items-center rounded-2xl transition-all duration-300 ${
                 isActive
                   ? "bg-primary text-white shadow-lg shadow-primary/30"
                   : "text-gray-400 hover:bg-gray-800 hover:text-white"
-              }`}
+              } ${isCollapsed ? "md:justify-center md:px-0" : "gap-4 px-5"}`}
             >
-              <Icon className="text-xl" />
-              <span className="font-semibold">{item.name}</span>
+              <Icon className="shrink-0 text-xl" />
+              <span
+                className={`whitespace-nowrap font-semibold ${
+                  isCollapsed ? "md:hidden" : ""
+                }`}
+              >
+                {item.name}
+              </span>
             </Link>
           );
         })}
       </nav>
 
       {/* Area Bawah (Tombol Keluar Aktif) */}
-      <div className="p-6 border-t border-gray-800">
+      <div className="space-y-3 border-t border-gray-800 p-4">
         <Button
           variant="danger"
           size="md"
-          className="w-full !rounded-2xl"
+          className={`w-full !rounded-2xl ${
+            isCollapsed ? "md:!px-0" : ""
+          }`}
           onClick={handleLogout} // Memanggil fungsi logout saat diklik
+          title="Keluar"
         >
-          <FaSignOutAlt /> Keluar
+          <FaSignOutAlt />
+          <span className={isCollapsed ? "md:hidden" : ""}>Keluar</span>
         </Button>
       </div>
     </aside>

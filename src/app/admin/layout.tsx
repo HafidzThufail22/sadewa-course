@@ -1,4 +1,4 @@
-import Sidebar from "../../components/layout/admin/Sidebar";
+import Header from "../../components/layout/admin/Header";
 
 export const metadata = {
   title: "Admin - LPK Sadewa",
@@ -10,10 +10,5 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <Sidebar />
-      <main className="ml-64 min-h-screen p-8">{children}</main>
-    </div>
-  );
+  return <Header>{children}</Header>;
 }

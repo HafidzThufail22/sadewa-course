@@ -89,7 +89,7 @@ export default function LoginPage() {
       window.dispatchEvent(new Event("userRoleChange"));
 
       // 4. Arahkan ke dasbor admin
-      router.push("/admin/packages");
+      router.push("/admin/dashboard");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Login gagal.");
     } finally {
