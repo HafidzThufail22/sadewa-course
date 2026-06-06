@@ -4,7 +4,7 @@ import { ButtonHTMLAttributes, ReactNode } from "react";
 // Mendefinisikan properti apa saja yang bisa diterima oleh tombol ini
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: "primary" | "glass" | "white";
+  variant?: "primary" | "glass" | "white" | "danger";
   size?: "sm" | "md" | "lg";
   href?: string;
   className?: string; // Jika sewaktu-waktu butuh menambah class tambahan
@@ -18,16 +18,18 @@ export default function Button({
   className = "",
   ...props // Mengambil properti bawaan button (seperti onClick, disabled, type)
 }: ButtonProps) {
-  
   // 1. Gaya Dasar (Selalu ada di semua tombol)
   // Berisi efek hover scale, shadow, flex, dan rounded-full sesuai referensi kamu
-  const baseStyles = "font-bold flex items-center justify-center gap-2 transition-all transform hover:scale-105 rounded-full shadow-xl";
+  const baseStyles =
+    "font-bold flex items-center justify-center gap-2 transition-all transform hover:scale-105 rounded-full shadow-xl";
 
   // 2. Varian Warna (Bisa dipilih melalui prop 'variant')
   const variants = {
     primary: "bg-primary hover:bg-primary-hover text-white shadow-primary/20",
-    glass: "bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30",
+    glass:
+      "bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30",
     white: "bg-white hover:bg-gray-50 text-primary border border-gray-200", // Tombol putih biasa
+    danger: "bg-red-500 hover:bg-red-600 text-white shadow-red-500/20", // Varian merah untuk aksi berbahaya
   };
 
   // 3. Varian Ukuran (Bisa dipilih melalui prop 'size')
@@ -41,7 +43,7 @@ export default function Button({
   // Menggabungkan semua class
   const combinedClasses = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
 
-  // LOGIKA SMART BUTTON: 
+  // LOGIKA SMART BUTTON:
   // Jika ada prop 'href', jadikan Link Next.js
   if (href) {
     return (
