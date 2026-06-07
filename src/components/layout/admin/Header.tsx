@@ -21,8 +21,7 @@ export default function Header({ children }: { children: React.ReactNode }) {
   const isMobileSidebarVisible = isSidebarOpen;
   const isDesktopSidebarVisible = !isSidebarCollapsed;
   const activePage =
-    pageTitles.find((page) => pathname.startsWith(page.href))?.label ??
-    "Admin";
+    pageTitles.find((page) => pathname.startsWith(page.href))?.label ?? "Admin";
 
   const handleToggleSidebar = () => {
     setIsSidebarOpen((value) => !value);
@@ -47,7 +46,7 @@ export default function Header({ children }: { children: React.ReactNode }) {
       />
 
       <header
-        className={`fixed left-0 right-0 top-0 z-50 flex h-16 items-center border-b border-gray-200 bg-white/95 px-4 shadow-sm backdrop-blur transition-[margin] duration-300 md:px-6 ${
+        className={`fixed left-0 right-0 top-0 z-50 flex h-16 items-center border-b border-gray-200 bg-white/95 px-4 shadow-sm transition-[margin] duration-300 md:px-6 ${
           isSidebarCollapsed ? "md:ml-20" : "md:ml-64"
         }`}
       >

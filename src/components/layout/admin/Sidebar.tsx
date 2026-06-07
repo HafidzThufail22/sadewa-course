@@ -88,13 +88,13 @@ export default function Sidebar({
 
   return (
     <aside
-      className={`fixed left-0 top-16 z-50 flex h-[calc(100vh-4rem)] flex-col bg-gray-950 text-white shadow-2xl transition-[transform,width] duration-300 md:top-0 md:h-screen ${
+      className={`fixed left-0 top-16 z-50 flex h-[calc(100vh-4rem)] flex-col bg-white/95  text-gray-900 shadow-2xl transition-[transform,width] duration-300 md:top-0 md:h-screen ${
         isCollapsed ? "md:w-20" : "md:w-64"
       } ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"} w-64`}
     >
       {/* Logo Area */}
       <div
-        className={`flex h-16 items-center border-b border-gray-800 px-4 ${
+        className={`flex h-16 items-center border-b border-gray-200 px-4 ${
           isCollapsed ? "md:justify-center" : "justify-start"
         }`}
       >
@@ -130,7 +130,7 @@ export default function Sidebar({
               className={`flex h-12 items-center rounded-2xl transition-all duration-300 ${
                 isActive
                   ? "bg-primary text-white shadow-lg shadow-primary/30"
-                  : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                  : "text-gray-950 hover:bg-primary/15 hover:text-gray-950"
               } ${isCollapsed ? "md:justify-center md:px-0" : "gap-4 px-5"}`}
             >
               <Icon className="shrink-0 text-xl" />
@@ -151,9 +151,7 @@ export default function Sidebar({
         <Button
           variant="danger"
           size="md"
-          className={`w-full !rounded-2xl ${
-            isCollapsed ? "md:!px-0" : ""
-          }`}
+          className={`w-full !rounded-2xl ${isCollapsed ? "md:!px-0" : ""}`}
           onClick={handleLogout} // Memanggil fungsi logout saat diklik
           title="Keluar"
         >
