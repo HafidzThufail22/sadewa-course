@@ -33,7 +33,7 @@ export default function Header({ children }: { children: React.ReactNode }) {
       {isSidebarOpen && (
         <button
           type="button"
-          className="fixed bottom-0 left-0 right-0 top-16 z-40 bg-black/40 md:hidden"
+          className="fixed inset-0 z-40 bg-black/40 md:hidden"
           onClick={() => setIsSidebarOpen(false)}
           aria-label="Tutup sidebar"
         />
@@ -46,7 +46,7 @@ export default function Header({ children }: { children: React.ReactNode }) {
       />
 
       <header
-        className={`fixed left-0 right-0 top-0 z-50 flex h-16 items-center border-b border-gray-200 bg-white/95 px-4 shadow-sm transition-[margin] duration-300 md:px-6 ${
+        className={`fixed left-0 right-0 top-0 z-40 flex h-16 items-center border-b border-gray-200 bg-white px-4 transition-[margin] duration-300 md:px-6 ${
           isSidebarCollapsed ? "md:ml-20" : "md:ml-64"
         }`}
       >
