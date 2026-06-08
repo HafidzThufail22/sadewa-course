@@ -1,4 +1,5 @@
-import { ReactNode } from "react";
+import { ReactNode, useState, useMemo } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 type Align = "left" | "center" | "right";
 
@@ -19,7 +20,6 @@ interface TableProps<T> {
   title?: string;
   description?: string;
   actions?: ReactNode;
-  footer?: ReactNode;
   emptyMessage?: string;
   isLoading?: boolean;
   loadingRows?: number;
@@ -61,7 +61,6 @@ export default function Table<T>({
   title,
   description,
   actions,
-  footer,
   emptyMessage = "Belum ada data yang tersedia.",
   isLoading = false,
   loadingRows = 5,
@@ -69,6 +68,21 @@ export default function Table<T>({
 }: TableProps<T>) {
   const hasHeader = title || description || actions;
   const skeletonRows = Array.from({ length: loadingRows });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const paginatedData = useMemo(() => {
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    return data.slice(startIndex, startIndex + rowsPerPage);
+  }, [data, currentPage, rowsPerPage]);
+
+  const totalPages = Math.ceil(data.length / rowsPerPage);
+
+  const handleRowsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setRowsPerPage(Number(e.target.value));
+    setCurrentPage(1);
+  };
 
   return (
     <div
@@ -93,8 +107,8 @@ export default function Table<T>({
         <table className="min-w-full divide-y divide-blue-100">
           <thead className="bg-blue-50/80">
             <tr>
-              {columns.map((column) => {
-                const align = column.align ?? "left";
+              {columns.map((column, columnIndex) => {
+                const align = column.align ?? (columnIndex === 0 ? "left" : "center");
 
                 return (
                   <th
@@ -122,13 +136,13 @@ export default function Table<T>({
               ))}
 
             {!isLoading &&
-              data.map((row, rowIndex) => (
+              paginatedData.map((row, rowIndex) => (
                 <tr
                   key={getRowKey ? getRowKey(row, rowIndex) : rowIndex}
                   className="transition-colors hover:bg-blue-50/50"
                 >
-                  {columns.map((column) => {
-                    const align = column.align ?? "left";
+                  {columns.map((column, columnIndex) => {
+                    const align = column.align ?? (columnIndex === 0 ? "left" : "center");
 
                     return (
                       <td
@@ -156,9 +170,47 @@ export default function Table<T>({
         </table>
       </div>
 
-      {footer && (
-        <div className="border-t border-blue-100 bg-blue-50/40 px-5 py-4">
-          {footer}
+      {!isLoading && data.length > 0 && (
+        <div className="flex flex-col gap-4 border-t border-blue-100 bg-blue-50/40 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2 text-sm text-gray-600">
+            <span>Tampilkan</span>
+            <select
+              value={rowsPerPage}
+              onChange={handleRowsPerPageChange}
+              className="rounded border border-gray-200 bg-white px-2 py-1 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-blue-100"
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+            </select>
+            <span>data</span>
+          </div>
+
+          <div className="flex items-center justify-between sm:justify-end gap-4 text-sm">
+            <span className="text-gray-500">
+              {data.length === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1} -{" "}
+              {Math.min(currentPage * rowsPerPage, data.length)} dari {data.length}
+            </span>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="rounded p-1.5 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900 disabled:opacity-30 disabled:hover:bg-transparent"
+                title="Sebelumnya"
+              >
+                <FaChevronLeft />
+              </button>
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages || totalPages === 0}
+                className="rounded p-1.5 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900 disabled:opacity-30 disabled:hover:bg-transparent"
+                title="Selanjutnya"
+              >
+                <FaChevronRight />
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
