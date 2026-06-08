@@ -21,6 +21,51 @@ interface VehicleStat {
   value: number;
 }
 
+function AnimatedCounter({ value }: { value: number }) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    let startTimestamp: number;
+    let animationFrame: number;
+    const duration = 600; // 600ms random flickering
+
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = timestamp - startTimestamp;
+
+      if (progress < duration) {
+        setDisplayValue(Math.floor(Math.random() * 99)); // random number 0-99
+        animationFrame = requestAnimationFrame(step);
+      } else {
+        setDisplayValue(value);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [value]);
+
+  return <span>{displayValue}</span>;
+}
+
+function AnimatedProgressBar({ percentage, color }: { percentage: number; color: string }) {
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setWidth(percentage), 100);
+    return () => clearTimeout(timer);
+  }, [percentage]);
+
+  return (
+    <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+      <div 
+        className="h-full rounded-full transition-all duration-1000 ease-out"
+        style={{ width: `${width}%`, backgroundColor: color }}
+      />
+    </div>
+  );
+}
+
 export default function AdminDashboardPage() {
   const [metrics, setMetrics] = useState<DashboardMetrics>({
     totalPackages: 0,
@@ -137,7 +182,7 @@ export default function AdminDashboardPage() {
             <div>
               <p className="text-sm font-semibold text-gray-500">{stat.title}</p>
               <p className="text-2xl font-bold text-gray-900">
-                {isLoading ? "-" : stat.value}
+                {isLoading ? "-" : <AnimatedCounter value={stat.value} />}
               </p>
             </div>
           </div>
@@ -190,7 +235,9 @@ export default function AdminDashboardPage() {
               {/* Inner Text for Donut */}
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <p className="text-3xl font-extrabold text-gray-900">{metrics.totalPackages}</p>
+                  <p className="text-3xl font-extrabold text-gray-900">
+                    <AnimatedCounter value={metrics.totalPackages} />
+                  </p>
                   <p className="text-xs font-semibold text-gray-500">Paket</p>
                 </div>
               </div>
@@ -209,14 +256,11 @@ export default function AdminDashboardPage() {
                         <span className="h-2 w-2 rounded-full" style={{ backgroundColor: color }}></span>
                         {stat.name}
                       </div>
-                      <span className="font-bold text-gray-900">{stat.value}</span>
+                      <span className="font-bold text-gray-900">
+                        <AnimatedCounter value={stat.value} />
+                      </span>
                     </div>
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
-                      <div 
-                        className="h-full rounded-full transition-all duration-1000 ease-out"
-                        style={{ width: `${percentage}%`, backgroundColor: color }}
-                      />
-                    </div>
+                    <AnimatedProgressBar percentage={percentage} color={color} />
                   </div>
                 );
               })}
