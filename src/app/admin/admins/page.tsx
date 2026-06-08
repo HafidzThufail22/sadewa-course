@@ -11,17 +11,16 @@ type AdminRoleValue = "admin" | "super admin";
 type ModalMode = "create" | "edit" | "delete" | null;
 
 interface AdminFormState {
-  user_id: string;
+  email: string;
   role: AdminRoleValue;
 }
 
 const initialFormState: AdminFormState = {
-  user_id: "",
+  email: "",
   role: "admin",
 };
 
-const uuidPattern =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("id-ID", {
@@ -53,11 +52,15 @@ function normalizeFormRole(role: string): AdminRoleValue {
     : "admin";
 }
 
+interface AdminUser extends UserRole {
+  email?: string;
+}
+
 export default function AdminUsersPage() {
-  const [admins, setAdmins] = useState<UserRole[]>([]);
+  const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [form, setForm] = useState<AdminFormState>(initialFormState);
-  const [selectedAdmin, setSelectedAdmin] = useState<UserRole | null>(null);
+  const [selectedAdmin, setSelectedAdmin] = useState<AdminUser | null>(null);
   const [modalMode, setModalMode] = useState<ModalMode>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -72,8 +75,8 @@ export default function AdminUsersPage() {
       await Promise.all([
         supabase.auth.getUser(),
         supabase
-          .from("user_role")
-          .select("id, created_at, user_id, role")
+          .from("admin_users_view")
+          .select("id, created_at, user_id, role, email")
           .order("created_at", { ascending: false }),
       ]);
 
@@ -83,7 +86,7 @@ export default function AdminUsersPage() {
       setError(fetchError.message);
       setAdmins([]);
     } else {
-      setAdmins((data ?? []) as UserRole[]);
+      setAdmins((data ?? []) as AdminUser[]);
     }
 
     setIsLoading(false);
@@ -116,18 +119,18 @@ export default function AdminUsersPage() {
     setModalMode("create");
   };
 
-  const openEditModal = (admin: UserRole) => {
+  const openEditModal = (admin: AdminUser) => {
     setError("");
     setSuccess("");
     setSelectedAdmin(admin);
     setForm({
-      user_id: admin.user_id,
+      email: admin.email || "",
       role: normalizeFormRole(admin.role),
     });
     setModalMode("edit");
   };
 
-  const openDeleteModal = (admin: UserRole) => {
+  const openDeleteModal = (admin: AdminUser) => {
     setError("");
     setSuccess("");
     setSelectedAdmin(admin);
@@ -135,12 +138,12 @@ export default function AdminUsersPage() {
   };
 
   const validateForm = () => {
-    if (!form.user_id.trim()) {
-      return "User ID wajib diisi.";
+    if (!form.email.trim()) {
+      return "Email wajib diisi.";
     }
 
-    if (!uuidPattern.test(form.user_id.trim())) {
-      return "User ID harus berupa UUID Supabase Auth yang valid.";
+    if (!emailPattern.test(form.email.trim())) {
+      return "Format email tidak valid.";
     }
 
     return "";
@@ -159,8 +162,26 @@ export default function AdminUsersPage() {
     setError("");
     setSuccess("");
 
+    // Look up the user_id using the email RPC
+    const { data: userId, error: rpcError } = await supabase.rpc(
+      "get_user_id_by_email",
+      { user_email: form.email.trim() }
+    );
+
+    if (rpcError) {
+      setError("Gagal mencari user: " + rpcError.message);
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!userId) {
+      setError("User dengan email tersebut tidak ditemukan. Pastikan user sudah terdaftar di sistem.");
+      setIsSubmitting(false);
+      return;
+    }
+
     const payload = {
-      user_id: form.user_id.trim(),
+      user_id: userId,
       role: form.role,
     };
 
@@ -210,14 +231,14 @@ export default function AdminUsersPage() {
     setIsSubmitting(false);
   };
 
-  const columns = useMemo<TableColumn<UserRole>[]>(
+  const columns = useMemo<TableColumn<AdminUser>[]>(
     () => [
       {
-        key: "user_id",
-        header: "User ID",
+        key: "email",
+        header: "Email",
         cell: (admin) => (
           <div>
-            <p className="font-semibold text-gray-950">{admin.user_id}</p>
+            <p className="font-semibold text-gray-950">{admin.email || admin.user_id}</p>
             {admin.user_id === currentUserId && (
               <p className="mt-1 text-xs font-semibold text-primary">
                 Akun sedang login
@@ -283,7 +304,7 @@ export default function AdminUsersPage() {
 
         <Table
           title="Daftar Admin"
-          description="Data diambil langsung dari tabel user_role Supabase."
+          description="Kelola akun admin yang dapat mengakses dashboard."
           columns={columns}
           data={admins}
           getRowKey={(admin) => admin.id}
@@ -342,19 +363,19 @@ export default function AdminUsersPage() {
 
           <div>
             <label
-              htmlFor="admin-user-id"
+              htmlFor="admin-email"
               className="mb-2 block text-sm font-bold text-gray-700"
             >
-              User ID
+              Email User
             </label>
             <input
-              id="admin-user-id"
-              type="text"
-              value={form.user_id}
+              id="admin-email"
+              type="email"
+              value={form.email}
               onChange={(event) =>
-                setForm((value) => ({ ...value, user_id: event.target.value }))
+                setForm((value) => ({ ...value, email: event.target.value }))
               }
-              placeholder="UUID user dari Supabase Auth"
+              placeholder="Email user yang sudah terdaftar"
               className="w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm text-gray-800 outline-none transition-colors placeholder:text-gray-400 focus:border-primary focus:ring-4 focus:ring-blue-100"
               required
             />
@@ -442,7 +463,7 @@ export default function AdminUsersPage() {
           {selectedAdmin && (
             <div className="rounded-lg border border-blue-100 bg-blue-50/70 p-4">
               <p className="font-semibold text-gray-950">
-                {selectedAdmin.user_id}
+                {selectedAdmin.email || selectedAdmin.user_id}
               </p>
               <div className="mt-3">{getRoleBadge(selectedAdmin.role)}</div>
             </div>
