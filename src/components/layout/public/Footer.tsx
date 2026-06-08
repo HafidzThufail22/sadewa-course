@@ -3,12 +3,12 @@ import { FaWhatsapp, FaInstagram, FaFacebookF } from "react-icons/fa";
 const socialLinks = [
   {
     icon: <FaWhatsapp className="text-lg" />,
-    href: "https://wa.me/628xxxxxxxxx",
+    href: "https://wa.me/6287838707128",
     label: "WhatsApp",
   },
   {
     icon: <FaInstagram className="text-lg" />,
-    href: "https://instagram.com/lpksadewa",
+    href: "https://www.instagram.com/sadewacourse/",
     label: "Instagram",
   },
   {
@@ -22,7 +22,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-black py-8 px-4">
+    <footer id="contact" className="bg-black py-8 px-4">
       <div className="max-w-7xl mx-auto flex flex-col items-center gap-5">
 
         {/* Social Icons */}

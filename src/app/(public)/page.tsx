@@ -6,18 +6,24 @@ import LocationSection from "../../components/sections/LocationSection";
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <HeroSection />
+      <div id="home">
+        <HeroSection />
+      </div>
 
       {/* Section Paket Kursus */}
-      <div className="bg-gray-50">
+      <div id="packages" className="bg-gray-50">
         <PackagesSection />
       </div>
 
       {/* Section About */}
-      <AboutSection />
+      <div id="about">
+        <AboutSection />
+      </div>
 
       {/* Section Lokasi */}
-      <LocationSection />
+      <div id="location">
+        <LocationSection />
+      </div>
 
     </main>
   );

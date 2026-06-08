@@ -25,11 +25,11 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: "Beranda", href: "#" },
-    { name: "Tentang", href: "#" },
-    { name: "Paket", href: "#" },
-    { name: "Lokasi", href: "#" },
-    { name: "Kontak", href: "#" },
+    { name: "Beranda", href: "#home" },
+    { name: "Tentang", href: "#about" },
+    { name: "Paket", href: "#packages" },
+    { name: "Lokasi", href: "#location" },
+    { name: "Kontak", href: "#contact" },
   ];
 
   return (
