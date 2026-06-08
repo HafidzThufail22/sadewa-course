@@ -31,3 +31,14 @@
     @apply font-heading font-bold text-gray-900;
   }
 }
+
+/* Chrome Autofill Fix */
+.autofill-transparent:-webkit-autofill,
+.autofill-transparent:-webkit-autofill:hover, 
+.autofill-transparent:-webkit-autofill:focus, 
+.autofill-transparent:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px transparent inset !important;
+    transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s !important;
+    -webkit-text-fill-color: white !important;
+    caret-color: white !important;
+}
