@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FaPlus, FaEdit, FaTrash, FaSync } from "react-icons/fa";
 import Button from "../../../components/ui/Button";
 import Modal from "../../../components/ui/Modal";
 import Table, { TableColumn } from "../../../components/ui/Table";
@@ -229,26 +230,26 @@ export default function AdminPackagesPage() {
       {
         key: "actions",
         header: "Aksi",
-        align: "right",
+        align: "center",
         cell: (pkg) => (
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-center gap-2">
             <Button
               type="button"
               variant="primary"
               size="sm"
-              className="!rounded-lg !shadow-none"
+              className="!rounded-lg !shadow-none flex items-center gap-1.5"
               onClick={() => openEditModal(pkg)}
             >
-              Edit
+              <FaEdit /> Edit
             </Button>
             <Button
               type="button"
               variant="danger"
               size="sm"
-              className="!rounded-lg !shadow-none"
+              className="!rounded-lg !shadow-none flex items-center gap-1.5"
               onClick={() => openDeleteModal(pkg)}
             >
-              Hapus
+              <FaTrash /> Hapus
             </Button>
           </div>
         ),
@@ -278,26 +279,26 @@ export default function AdminPackagesPage() {
           isLoading={isLoading}
           emptyMessage="Belum ada data paket di database."
           actions={
-            <Button
-              type="button"
-              variant="primary"
-              size="md"
-              className="!rounded-lg !shadow-none"
-              onClick={openCreateModal}
-            >
-              Tambah Paket
-            </Button>
-          }
-          footer={
-            <div className="flex flex-col gap-2 text-sm text-gray-500 sm:flex-row sm:items-center sm:justify-between">
-              <span>Total paket: {packages.length}</span>
-              <button
+            <div className="flex items-center gap-2">
+              <Button
                 type="button"
-                className="font-semibold text-primary transition-colors hover:text-primary-hover"
+                variant="white"
+                size="md"
+                className="!rounded-lg !shadow-none flex items-center gap-2"
                 onClick={() => void loadPackages()}
+                title="Muat Ulang Data"
               >
-                Muat ulang data
-              </button>
+                <FaSync /> Muat Ulang
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                className="!rounded-lg !shadow-none flex items-center gap-2"
+                onClick={openCreateModal}
+              >
+                <FaPlus /> Tambah Paket
+              </Button>
             </div>
           }
         />
